@@ -1,0 +1,13 @@
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\sort_visualiser.exe.config
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\sort_visualiser.exe
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\sort_visualiser.pdb
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\OpenTK.dll
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\OpenTK.pdb
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\OpenTK.xml
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.csproj.CoreCompileInputs.cache
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.csproj.CopyComplete
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.exe
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.pdb
+e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.csprojResolveAssemblyReference.cache
+E:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\UiSystemOpenTK.dll
+E:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\UiSystemOpenTK.pdb
