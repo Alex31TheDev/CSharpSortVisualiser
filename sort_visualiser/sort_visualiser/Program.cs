@@ -111,6 +111,9 @@ namespace sort_visualiser
             initializeUI();
             //inputStream;
 
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
             StartSynth();
         }
 
@@ -543,6 +546,8 @@ namespace sort_visualiser
         int screenshotTexture = 0;
         public Process synthProcess;
         public StreamWriter messageStream;
+        public int arrSize = 1000;
+
         protected override void OnRender(FrameEventArgs e)
         {
             //base.OnRenderFrame(e);
@@ -573,14 +578,14 @@ namespace sort_visualiser
             
             if (GetKeyPressed(Key.Space))
             {
-                BuildArray(1000);
+                BuildArray(arrSize);
                 initCirclePoints();
                 genCirclePoints();
                // sleepTime = 10;
                 //copied sorts
                 showShuffleAnim = true;
 
-                sm = ShuffleModes.NormalSwap;
+                sm = ShuffleModes.AlreadySorted;
                 //   Shuffle();
                 //   mergeSort(array, 0, array.Length - 1);
                 //  Shuffle();
@@ -591,16 +596,16 @@ namespace sort_visualiser
                 //  GravitySort(array);
                 // Shuffle();
                 // selectionSort(array);
-               //  Shuffle();
-               //  bubbleSort(array);
+                //  Shuffle();
+                //  bubbleSort(array);
                 //   Shuffle();
                 //   cocktailShakerSort(array);
                 // Shuffle();
                 // insertionSort(array);
 
-                    Shuffle();
-                     maxheapsort(array);
-               // Console.WriteLine(Environment.GetEnvironmentVariable("Path"));
+               // Shuffle();
+               //  maxheapsort(array);
+                // Console.WriteLine(Environment.GetEnvironmentVariable("Path"));
                 //  Shuffle();
                 //  weaveMergeSort(array, 0, array.Length - 1);
                 // Shuffle();
@@ -610,13 +615,13 @@ namespace sort_visualiser
                 //timeSort(array, 4);
                 //Shuffle();
                 //radixLSDsort(array, 4);
-             //    Shuffle();
-             //    inPlaceRadixLSDSort(array, 10);
-                //   Shuffle();
-                //   mergeSortOP(array);
+                 Shuffle();
+                 inPlaceRadixLSDSort(array, 10);
+                //  Shuffle();
+                //  mergeSortOP(array);
 
-              // Shuffle();
-              // radixMSDSort(array, 4);
+                //Shuffle();
+                //radixMSDSort(array, 4);
 
                 // Shuffle();
                 // RadixSort(array, 4);
@@ -642,7 +647,7 @@ namespace sort_visualiser
             GL.Enable(EnableCap.Texture2D);
             drawQuadWithTexture(0, 0, Width, Height, screenshotTexture);
             GL.Disable(EnableCap.Texture2D);
-            DrawString("awaiting input..", 12, 12, 18, Color.Black);
+            DrawString("awaiting input..", 12, 12, 18, Color.Blue);
             if (currentErrorString != "")
                 drawBetterButSlowString(currentErrorString, 12, 40, 18, Color.Black, Color.Red);
             if (currentInfoString != "" && currentErrorString == "")
@@ -674,9 +679,15 @@ namespace sort_visualiser
 
 
 
-            foreach (UiElement element in uis)
+            UiElement[] SortedUis = uis.OrderBy(o => o.order).ToArray();
+
+            foreach (UiElement element in SortedUis)
             {
-                element.Draw();
+
+                if (element.drawInLoop)
+                    element.Draw();
+
+                
             }
 
 
@@ -728,6 +739,21 @@ namespace sort_visualiser
 
         public TextBox InstrumentBox;
         public Label   InstrumentBoxLabel;
+
+        public Button showAudioMenuBut;
+
+        public TextBox visModeBox;
+        public Label visModeBoxLabel;
+        public Label currentVisModeBoxLabel;
+
+        public Button visModePlusBut;
+        public Button visModeMinusBut;
+
+        public TextBox ArraySizeBox;
+        public Label   ArraySizeBoxLabel;
+
+        public TextBox DelayBox;
+        public Label   DelayBoxLabel;
 
         public void initializeUI()
         {
@@ -822,12 +848,136 @@ namespace sort_visualiser
             restartSynthBut.OnClick += restart_synth_but_click;
 
 
+            showAudioMenuBut = new Button();
+            showAudioMenuBut.x = 12;
+            showAudioMenuBut.y = 120;
+            showAudioMenuBut.width = 150;
+            showAudioMenuBut.height = 20;
+            showAudioMenuBut.text = "Show audio menu";
+            showAudioMenuBut.OnClick += audio_settings_but_click;
+
+
             reverbBox.text = REVERB.ToString();
             NumChannelsBox.text = NUMCHANNELS.ToString();
             SoundMulBox.text = SOUNDMUL.ToString();
             PitchMaxBox.text = PITCHMAX.ToString();
             PitchMinBox.text = PITCHMIN.ToString();
             InstrumentBox.text = INSTRUMENT.ToString();
+
+
+            visModeBox = new TextBox();
+            visModeBox.x = 12;
+            visModeBox.y = 80;
+            visModeBox.width = 100;
+            visModeBox.height = 20;
+            visModeBox.OnTextChanged += vis_mode_box_on_changed;
+            visModeBoxLabel = new Label();
+            visModeBoxLabel.x = 12;
+            visModeBoxLabel.y = 60;
+            visModeBoxLabel.text = "Vis mode";
+            visModeBoxLabel.fontSize = 12;
+            currentVisModeBoxLabel = new Label();
+            currentVisModeBoxLabel.x = 12;
+            currentVisModeBoxLabel.y = 100;
+            currentVisModeBoxLabel.text = visModeNames[visMode];
+            currentVisModeBoxLabel.fontSize = 12;
+
+            visModePlusBut = new Button();
+            visModePlusBut.x = 110;
+            visModePlusBut.y = 80;
+            visModePlusBut.width = 20;
+            visModePlusBut.height = 20;
+            visModePlusBut.text = "+";
+            visModePlusBut.OnClick += vis_mode_plus_but_click;
+
+            visModeMinusBut = new Button();
+            visModeMinusBut.x = 130;
+            visModeMinusBut.y = 80;
+            visModeMinusBut.width = 20;
+            visModeMinusBut.height = 20;
+            visModeMinusBut.text = "-";
+            visModeMinusBut.OnClick += vis_mode_minus_but_click;
+
+            visModeBox.text = visMode.ToString();
+
+            ArraySizeBox = new TextBox();
+            ArraySizeBox.x = 12;
+            ArraySizeBox.y = 160;
+            ArraySizeBox.width = 100;
+            ArraySizeBox.height = 20;
+            ArraySizeBox.OnTextEntered += array_size_box_on_entered;
+            ArraySizeBoxLabel = new Label();
+            ArraySizeBoxLabel.x = 12;
+            ArraySizeBoxLabel.y = 140;
+            ArraySizeBoxLabel.text = "Array Size";
+            ArraySizeBoxLabel.fontSize = 12;
+
+            ArraySizeBox.text = arrSize.ToString();
+
+            DelayBox = new TextBox();
+            DelayBox.x = 12;
+            DelayBox.y = 200;
+            DelayBox.width = 100;
+            DelayBox.height = 20;
+            DelayBox.OnTextEntered += delay_box_on_entered;
+            DelayBoxLabel = new Label();
+            DelayBoxLabel.x = 12;
+            DelayBoxLabel.y = 180;
+            DelayBoxLabel.text = "Delay";
+            DelayBoxLabel.fontSize = 12;
+
+            DelayBox.text = sleepTime.ToString();
+
+            reverbBox.Enabled =     false;
+                 reverbBoxLabel.Enabled =false;
+                                         
+               PitchMaxBox.Enabled =     false;
+               PitchMaxBoxLabel.Enabled =false;
+                                         
+               PitchMinBox.Enabled =     false;
+               PitchMinBoxLabel.Enabled =false;
+                                         
+             InstrumentBox.Enabled =     false;
+             InstrumentBoxLabel.Enabled =false;
+                                         
+            NumChannelsBox.Enabled =     false;
+            NumChannelsBoxLabel.Enabled =false;
+                                         
+               SoundMulBox.Enabled =     false;
+               SoundMulBoxLabel.Enabled =false;
+
+
+
+                 reverbBox.     order = 1;
+                 reverbBoxLabel.order = 1;
+                                 
+               PitchMaxBox.     order = 1;
+               PitchMaxBoxLabel.order = 1;
+                               
+               PitchMinBox.     order = 1;
+               PitchMinBoxLabel.order = 1;
+                               
+             InstrumentBox.     order = 1;
+             InstrumentBoxLabel.order = 1;
+                               
+             NumChannelsBox.    order = 1;
+            NumChannelsBoxLabel.order = 1;
+                              
+               SoundMulBox.     order = 1;
+               SoundMulBoxLabel.order = 1;
+
+            uis.Add(DelayBox);
+            uis.Add(DelayBoxLabel);
+
+            uis.Add(ArraySizeBox);
+            uis.Add(ArraySizeBoxLabel);
+
+            uis.Add(visModePlusBut);
+            uis.Add(visModeMinusBut);
+
+            uis.Add(visModeBox);
+            uis.Add(visModeBoxLabel);
+            uis.Add(currentVisModeBoxLabel);
 
             uis.Add(restartSynthBut);
 
@@ -850,6 +1000,124 @@ namespace sort_visualiser
            
             uis.Add(PitchMaxBox);
             uis.Add(PitchMaxBoxLabel);
+            uis.Add(showAudioMenuBut);
+        }
+
+        private void delay_box_on_entered(object sender, EventArgs e)
+        {
+            int delay = 0;
+            bool success = int.TryParse(DelayBox.text, out delay);
+            if (success)
+            {
+                sleepTime = delay;
+            }
+        }
+
+        private void array_size_box_on_entered(object sender, EventArgs e)
+        {
+            int size = 0;
+            bool success = int.TryParse(ArraySizeBox.text, out size);
+            if (success) {
+                arrSize = size;
+                }
+        }
+
+        private void vis_mode_plus_but_click(object sender, EventArgs e)
+        {
+            if (visMode+1 < visModeNames.Length)
+            {
+                visModeBox.text = (visMode + 1).ToString();
+
+                vis_mode_box_on_changed(this, new EventArgs());
+            }
+        }
+
+        private void vis_mode_minus_but_click(object sender, EventArgs e)
+        {
+            if (visMode > 0)
+            {
+                visModeBox.text = (visMode-1).ToString();
+
+                vis_mode_box_on_changed(this, new EventArgs());
+            }
+        }
+
+        private void vis_mode_box_on_changed(object sender, EventArgs e)
+        {
+            int mode = 0;
+            bool success = int.TryParse(visModeBox.text, out mode);
+            if (success)
+            {
+                if (mode < visModeNames.Length)
+                {
+                    visMode = mode;
+                    currentVisModeBoxLabel.text = visModeNames[visMode];
+                } else
+                {
+                    visMode = 0;
+                    currentVisModeBoxLabel.text = "Invalid mode";
+                }
+            } else
+            {
+                visMode = 0;
+                currentVisModeBoxLabel.text = "Invalid number";
+            }
+        }
+
+        public List<bool> oldEnableStates;
+        bool showAudioPanel = false;
+        private void audio_settings_but_click(object sender, EventArgs e)
+        {
+            if (showAudioPanel == false)
+            {
+                oldEnableStates = new List<bool>();
+
+                for (int i = 0; i < uis.ToArray().Length; i++)
+                {
+                    oldEnableStates.Add(uis[i].Enabled);
+                    uis[i].Enabled = false;
+                }
+
+                showAudioPanel = true;
+
+                showAudioMenuBut.x = 12;
+                showAudioMenuBut.y = Height - 100;
+
+                reverbBox.Enabled = true;
+                reverbBoxLabel.Enabled = true;
+
+                PitchMaxBox.Enabled = true;
+                PitchMaxBoxLabel.Enabled = true;
+
+                PitchMinBox.Enabled = true;
+                PitchMinBoxLabel.Enabled = true;
+
+                InstrumentBox.Enabled = true;
+                InstrumentBoxLabel.Enabled = true;
+
+                NumChannelsBox.Enabled = true;
+                NumChannelsBoxLabel.Enabled = true;
+
+                SoundMulBox.Enabled = true;
+                SoundMulBoxLabel.Enabled = true;
+
+                showAudioMenuBut.Enabled = true;
+
+                showAudioMenuBut.text = "Hide audio menu";
+            } else
+            {
+                for (int i = 0; i < oldEnableStates.Count-1; i++)
+                {
+                    uis[i].Enabled = oldEnableStates[i];
+                }
+
+                showAudioMenuBut.text = "Show audio menu";
+
+                showAudioMenuBut.x = 12;
+                showAudioMenuBut.y = 120;
+
+                showAudioPanel = false;
+            }
         }
 
         private void restart_synth_but_click(object sender, EventArgs e)
@@ -891,7 +1159,7 @@ namespace sort_visualiser
 
         private void reverb_box_on_entered(object sender, EventArgs e)
         {
-            REVERB = int.Parse(reverbBox.text);
+             REVERB = int.Parse(reverbBox.text);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -1579,10 +1847,9 @@ public  void swapnm(int[] ac, int i, int j)
                     }
                     break;
                 case ShuffleModes.DecendingArray:
-                    for (int i = 0; i < array.Length; i++)
+                    for (int i = 0; i < array.Length/2; i++)
                     {
-                        array[i] = array.Length - i;
-                        marked[1] = i;
+                        swap(array, i, array.Length - i-1);
                         if(showShuffleAnim)
                         dT();
                     }
@@ -1668,7 +1935,7 @@ public  void swapnm(int[] ac, int i, int j)
             foreach(List<int> ai in registers)
                 total += ai.Count();
             int tmp = 0;
-            for (int ai = registers.Length - 1; ai >= 0; ai--)
+            for (int ai = registers.Length; ai >= 0; ai--)
             {
                 for (int i = registers[ai].Count - 1; i >= 0; i--)
                 {
@@ -2148,22 +2415,23 @@ public  void swapnm(int[] ac, int i, int j)
                         for (int ia = 0; ia < array.Length; ia++)
                         {
 
-                           // int r = 0;
-                           // int g = 0;
-                           // int b = 0;
-                           //
-                           // HsvToRgb(makeInRange(array[ia], 0, array.Length, 255, 0), 1, 1, out r, out g, out b);
-                           //
-                           // GL.Color4((byte)r, (byte)g, (byte)b, (byte)255);
-                           if(useColor)
+                            // int r = 0;
+                            // int g = 0;
+                            // int b = 0;
+                            //
+                            // HsvToRgb(makeInRange(array[ia], 0, array.Length, 255, 0), 1, 1, out r, out g, out b);
+                            //
+                            // GL.Color4((byte)r, (byte)g, (byte)b, (byte)255);
+                            if (useColor)
                                 setColor(ia);
 
                             GL.Vertex2(Width / 2, Height / 2);
-                            GL.Vertex2(Width / 2 + (Math.Cos(ia * stretchXY * (0.01745329252) - Math.PI / 2) * radiusX), Height / 2 + (Math.Sin(ia * stretchXY * (0.01745329252) - Math.PI / 2) * radiusY));
+                            //float stretchVal = ;
+                            GL.Vertex2(Width / 2 + (Math.Cos(ia * stretchXY * (0.01745329252) - Math.PI / 2) * (array[ia] * stretchX / 2)), Height / 2 + (Math.Sin(ia * stretchXY * (0.01745329252) - Math.PI / 2) * (array[ia] * stretchY / 2)));
 
 
 
-                            GL.Vertex2(Width / 2 + (Math.Cos((ia * stretchXY + stretchXY) * (0.01745329252) - Math.PI / 2) * radiusX), Height / 2 + (Math.Sin((ia * stretchXY + stretchXY) * (0.01745329252) - Math.PI / 2)  *radiusY));
+                            GL.Vertex2(Width / 2 + (Math.Cos((ia * stretchXY + stretchXY) * (0.01745329252) - Math.PI / 2) *  (array[ia] * stretchX / 2)), Height / 2 + (Math.Sin((ia * stretchXY + stretchXY) * (0.01745329252) - Math.PI / 2) * (array[ia] * stretchY / 2)));
                         }
                         GL.End();
 
@@ -2496,9 +2764,14 @@ public  void swapnm(int[] ac, int i, int j)
                 }
 
             }
-            msgStr = msgStr.Remove(msgStr.Length - 1);
-            SendMsg(msgStr);
-            msgStr = "";
+            //  if(msgStr != "")
+            //msgStr = msgStr.Remove(msgStr.Length - 1);
+
+            if (msgStr != "")
+            {
+                SendMsg(msgStr);
+                msgStr = "";
+            }
 
 
 
@@ -2563,8 +2836,25 @@ public  void swapnm(int[] ac, int i, int j)
         //13. vertical pyramid
         //14. double vertical pyramid
 
-            //91
-        private int REVERB = 1;
+        //91
+        public string[] visModeNames = {
+            "Scatter points",
+            "Line graph",
+            "Connected lines",
+            "idk",
+            "Rainbow",
+            "Horizontal pyramid",
+            "Double horizontal pyramid",
+            "Color circle",
+            "Spiral",
+                "Dast color circle",
+                "Disparity circle",
+                "Scatter circle",
+                "Connected circle",
+                "Vertical pyramid",
+                "Double vertical pyramid"
+        };
+        private int REVERB = 50;
         public void setColor (int ia)
         {
             int r = 0;
@@ -2634,7 +2924,7 @@ public  void swapnm(int[] ac, int i, int j)
 
                 marked[1] = low;
                 marked[2] = high;
-                //if(end-start>=array.length/10)
+               //if(end-start>=array.Length/10)
                 dT();
             }
             //System.arraycopy(tmp, 0, array, start, tmp.length);
