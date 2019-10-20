@@ -18,7 +18,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System.Runtime.InteropServices;
-
+using sort_visualiser.Sorts;
 namespace sort_visualiser
 {
     class Program
@@ -27,16 +27,17 @@ namespace sort_visualiser
         {
 
 
-            biggay yeet = new biggay(800, 400);
+            mainClass yeet = new mainClass(800, 400);
+            //yeet.Y = 500;
             yeet.VSync = VSyncMode.Off;
             yeet.Run();
 
         }
     }
 
-    class biggay : UiClass
+    class mainClass : UiClass
     {
-        public biggay(int width, int height) : base(width, height)
+        public mainClass(int width, int height) : base(width, height)
         {
         }
 
@@ -108,13 +109,109 @@ namespace sort_visualiser
 
 
             rand = new Random();
+            LoadSorts();
             initializeUI();
             //inputStream;
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
+            i = this;
+            
             StartSynth();
+
+           
+            
+        }
+
+        public void LoadSorts()
+        {
+            sorts = new Sort[17];
+
+            bubbleSort bubbleSort = new bubbleSort();
+            bubbleSort.array = array;
+
+            sorts[0] = bubbleSort;
+
+            cocktailShakerSort cocktailShakerSort = new cocktailShakerSort();
+            cocktailShakerSort.array = array;
+
+            sorts[1] = cocktailShakerSort;
+
+            selectionSort selectionSort = new selectionSort();
+            selectionSort.array = array;
+
+            sorts[2] = selectionSort;
+
+            doubleSelectionSort doubleSelectionSort = new doubleSelectionSort();
+            doubleSelectionSort.array = array;
+
+            sorts[3] = doubleSelectionSort;
+
+            insertionSort insertionSort = new insertionSort();
+            insertionSort.array = array;
+
+            sorts[4] = insertionSort;
+
+            shellSort shellSort = new shellSort();
+            shellSort.array = array;
+
+            sorts[5] = shellSort;
+
+            mergeSortIP mergeSortIP = new mergeSortIP();
+            mergeSortIP.array = array;
+
+            sorts[6] = mergeSortIP;
+
+            mergeSort mergeSort = new mergeSort();
+            mergeSort.array = array;
+
+            sorts[7] = mergeSort;
+
+            waveMergeSort waveMergeSort = new waveMergeSort();
+            waveMergeSort.array = array;
+
+            sorts[8] = waveMergeSort;
+
+            maxHeapSort maxHeapSort = new maxHeapSort();
+            maxHeapSort.array = array;
+
+            sorts[9] = maxHeapSort;
+
+            quickSort quickSort = new quickSort();
+            quickSort.array = array;
+
+            sorts[10] = quickSort;
+
+            countingSort countingSort = new countingSort();
+            countingSort.array = array;
+
+            sorts[11] = countingSort;
+
+            gravitySort gravitySort = new gravitySort();
+            gravitySort.array = array;
+
+            sorts[12] = gravitySort;
+
+            timeSort timeSort = new timeSort();
+            timeSort.array = array;
+
+            sorts[13] = timeSort;
+
+            radixLsdSort radixLsdSort = new radixLsdSort();
+            radixLsdSort.array = array;
+
+            sorts[14] = radixLsdSort;
+
+            inplaceRadixSort inplaceRadixSort = new inplaceRadixSort();
+            inplaceRadixSort.array = array;
+
+            sorts[15] = inplaceRadixSort;
+
+            radixMsdSort radixMsdSort = new radixMsdSort();
+            radixMsdSort.array = array;
+
+            sorts[16] = radixMsdSort;
         }
 
         public void StartSynth ()
@@ -149,307 +246,23 @@ namespace sort_visualiser
 
 
 
-        public int analyzemax(int[] ac)
-        {
-            int a = 0;
-            for (int i = 0; i < ac.Length; i++)
-            {
-                if (ac[i] > a)
-                    a = ac[i];
-                marked[1] = i;
+       
 
-                dT();
-            }
-            return a;
-        }
+        
 
-        public void fancyTranscribe(int[] ac, List<int>[] registers)
-        {
-            int[] tmp = new int[ac.Length];
-            bool[] tmpwrite = new bool[ac.Length];
-            int radix = registers.Length;
-            transcribenm(registers, tmp);
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                int register = i % radix;
-                if (register == 0)
-                    Thread.Sleep(radix);//radix
-                int pos = (int)(((double)register * ((double)tmp.Length / radix)) + ((double)i / radix));
-                if (tmpwrite[pos] == false)
-                {
-                    ac[pos] = tmp[pos];
-                    tmpwrite[pos] = true;
-                }
-                
-                marked[register] = pos;
-                dT();
-            }
-            for (int i = 0; i < tmpwrite.Length; i++)
-                if (tmpwrite[i] == false)
-                {
+        
+        
+       
 
-                    marked[i] = tmp[i];
-                    dT();
-                }
-        }
+       
 
-        public void transcribenm(List<int>[] registers, int[] array)
-        {
-            int total = 0;
-            for (int ai = 0; ai < registers.Length; ai++)
-            {
-                for (int i = 0; i < registers[ai].ToArray().Length; i++)
-                {
-                    array[total] = registers[ai][i];
-                    total++;
+       
 
-                }
-                registers[ai].Clear();
-            }
-        }
+        
 
-        public  void radixLSDsort(int[] ac, int radix)
-        {
-            
-            int highestpower = analyze(ac, radix);
-            List<int>[] registers = new List<int>[radix];
-            for (int i = 0; i < radix; i++)
-                registers[i] = new List<int>();
-            for (int p = 0; p <= highestpower; p++)
-            {
-                for (int i = 0; i < ac.Length; i++)
-                {
-                    marked[1] = i;
-                    if (i % 2 == 0)
-                        dT();
-                    registers[getDigit(ac[i], p, radix)].Add(ac[i]);
-                }
-                fancyTranscribe(ac, registers);
-            }
-        }
-
-        public  int analyze(int[] ac, int bse)
-        {
-            int a = 0;
-            for (int i = 0; i < ac.Length; i++)
-            {
-                marked[1] = i;
-               
-                dT();
-                if ((int)(Math.Log(ac[i]) / Math.Log(bse)) > a)
-                {
-                    a = (int)(Math.Log(ac[i]) / Math.Log(bse));
-                }
-            }
-            return a;
-        }
-        public int getDigit(int a, int power, int radix)
-        {
-            return (int)(a / Math.Pow(radix, power)) % radix;
-        }
-        public void countingSort(int[] ac)
-        {
-            int max = analyzemax(ac);
-            int[] counts = new int[max + 1];
-            for (int i = 0; i < ac.Length; i++)
-            {
-                marked[1] = (i);
-                
-                counts[ac[i]]++;
-                dT();
-            }
-            int x = 0;
-            for (int i = 0; i < ac.Length; i++)
-            {
-                if (counts[x] == 0)
-                    x++;
-                ac[i] = x;
-                counts[x]--;
-                marked[1] = i;
-                dT();
-            }
-        }
-
-        public void GravitySort(int[] array)
-        {
-            int max = array.Max();
-            int[][] abacus = new int[array.Length][];
-
-            for (int i = 0; i < abacus.Length; i++)
-            {
-                abacus[i] = new int[max];
-            }
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                for (int j = 0; j < array[i]; j++)
-                    abacus[i][abacus[0].Length - j - 1] = 1;
-                marked[1] = i;
-                dT();
-            }
-            //apply gravity
-            for (int i = 0; i < abacus[0].Length; i++)
-            {
-
-
-                for (int j = 0; j < abacus.Length; j++)
-                {
-                    if (abacus[j][i] == 1)
-                    {
-                        //Drop it
-                        int droppos = j;
-                        while (droppos + 1 < abacus.Length && abacus[droppos][i] == 1)
-                            droppos++;
-                        if (abacus[droppos][i] == 0)
-                        {
-                            abacus[j][i] = 0;
-                            abacus[droppos][i] = 1;
-
-                        }
-                    }
-                }
-
-
-
-                int count = 0;
-                for (int x = 0; x < abacus.Length; x++)
-                {
-                    count = 0;
-                    for (int y = 0; y < abacus[0].Length; y++)
-                        count += abacus[x][y];
-                    array[x] = count;
-                    //marked.Add(count);
-                    // sleep(0.002);
-                }
-                marked[1] = array.Length -  i - 1;
-                dT();
-
-
-
-
-
-
-
-            }
-
-        }
-
-        public void inPlaceRadixLSDSort(int[] ac, int radix)
-        {
-            int pos = 0;
-            int[] vregs = new int[radix - 1];
-            int maxpower = analyze(ac, radix);
-            double smul = Math.Sqrt(radix);
-            for (int p = 0; p <= maxpower; p++)
-            {
-                for (int i = 0; i < vregs.Length; i++)
-                    vregs[i] = ac.Length - 1;
-                pos = 0;
-                for (int i = 0; i < ac.Length; i++)
-                {
-                    int digit = getDigit(ac[pos], p, radix);
-                    if (digit == 0)
-                    {
-                        pos++;
-                        marked[0] = pos;
-                        //dT();
-                    }
-                    else
-                    {
-                        for (int j = 0; j < vregs.Length; j++)
-                        marked[j + 1] = vregs[j];
-                        swapUpToNM(ac, pos, vregs[digit - 1]);
-                        for (int j = digit - 1; j > 0; j--)
-                            vregs[j - 1]--;
-                    }
-                }
-
-            }
-        }
-
-        public void cocktailShakerSort(int[] ac)
-        {
-            int i = 0;
-            while (i < ac.Length / 2)
-            {
-                for (int j = i; j < ac.Length - i - 1; j++)
-                {
-
-                    if (ac[j] > ac[j + 1])
-                        swap(ac, j, j + 1);
-                }
-                for (int j = ac.Length - i - 1; j > i; j--)
-                {
-
-                    if (ac[j] < ac[j - 1])
-                        swap(ac, j, j - 1);
-                }
-                i++;
-            }
-        }
-
-        public void bubbleSort(int[] ac)
-        {
-            for (int i = ac.Length - 1; i > 0; i--)
-            {
-                for (int j = 0; j < i; j++)
-                {
-
-                    if (ac[j] > ac[j + 1])
-                    {
-
-                        swap(ac, j, j + 1);
-                    }
-                    else
-                    {
-
-                        marked[1] = (j + 1);
-                        marked[2] = -5;
-                    }
-                }
-                //marked.set(0, i);
-            }
-        }
-
-        public void DoubleSelectionSort(int[] array)
-        {
-            int i = 0;
-            int j = array.Length - 1;
-            while (i < j)
-            {
-                int dummy_index = i;
-                int dummy = array[dummy_index];
-                for (int k = i; k < j + 1; k++)
-                {
-                    if (array[k] > dummy)
-                    {
-                        dummy = array[k];
-                        dummy_index = k;
-                        dT();
-                    }
-                }
-                int tmp = array[dummy_index];
-                array[dummy_index] = array[j];
-                array[j] = tmp;
-                j--;
-
-                dummy_index = j;
-                dummy = array[dummy_index];
-                for (int k = j; k > i - 1; k--)
-                {
-                    if (array[k] < dummy)
-                    {
-                        dummy = array[k];
-                        dummy_index = k;
-                        dT();
-                    }
-                }
-                tmp = array[dummy_index];
-                array[dummy_index] = array[i];
-                array[i] = tmp;
-                i++;
-            }
-        }
+        
+        public static mainClass i;
+        
 
 
 
@@ -460,75 +273,9 @@ namespace sort_visualiser
 
 
 
-        void merge(int[] ac, int min, int max, int mid)
-        {
+        
 
-            //radixLSDsortnd(2, min, max);
-
-
-            int i = min;
-            while (i <= mid)
-            {
-                if (ac[i] > ac[mid + 1])
-                {
-
-                    swap(ac, i, mid + 1);
-                    push(ac, mid + 1, max);
-                }
-                i++;
-            }
-
-
-
-        }
-
-
-        void push(int[] ac, int s, int e)
-        {
-
-            for (int i = s; i < e; i++)
-            {
-                if (array[i] > array[i + 1])
-                {
-
-                    swap(ac, i, i + 1);
-                }
-            }
-
-
-        }
-
-        public void mergeSort(int[] ac, int min, int max)
-        {
-            if (max - min == 0)
-            {//only one element.
-             //no swap
-            }
-            else if (max - min == 1)
-            {//only two elements and swaps them
-                if (array[min] > array[max])
-                    swap(ac, min, max);
-            }
-            else
-            {
-                int mid = ((int)Math.Floor((double)(min + max) / 2));//The midpoint
-
-                mergeSort(ac, min, mid);//sort the left side
-                mergeSort(ac, mid + 1, max);//sort the right side
-                merge(ac, min, max, mid);//combines them
-            }
-        }
-
-        public void swap(int[] ac, int i, int j)
-        {
-            marked[1] = (i);
-            marked[2] = (j);
-            // TODO Auto-generated method stub
-            int temp = ac[i];
-            ac[i] = ac[j];
-            ac[j] = temp;
-            dT();
-        }
+        
 
         public Bitmap TakeScreenshot()
         {
@@ -547,6 +294,10 @@ namespace sort_visualiser
         public Process synthProcess;
         public StreamWriter messageStream;
         public int arrSize = 1000;
+
+        Sort[] sorts;
+
+        public Sort sortToRun;
 
         protected override void OnRender(FrameEventArgs e)
         {
@@ -581,11 +332,11 @@ namespace sort_visualiser
                 BuildArray(arrSize);
                 initCirclePoints();
                 genCirclePoints();
-               // sleepTime = 10;
+                // sleepTime = 10;
                 //copied sorts
                 showShuffleAnim = true;
 
-                sm = ShuffleModes.AlreadySorted;
+                sm = ShuffleModes.NormalSwap;
                 //   Shuffle();
                 //   mergeSort(array, 0, array.Length - 1);
                 //  Shuffle();
@@ -603,8 +354,8 @@ namespace sort_visualiser
                 // Shuffle();
                 // insertionSort(array);
 
-               // Shuffle();
-               //  maxheapsort(array);
+                // Shuffle();
+                //  maxheapsort(array);
                 // Console.WriteLine(Environment.GetEnvironmentVariable("Path"));
                 //  Shuffle();
                 //  weaveMergeSort(array, 0, array.Length - 1);
@@ -615,8 +366,8 @@ namespace sort_visualiser
                 //timeSort(array, 4);
                 //Shuffle();
                 //radixLSDsort(array, 4);
-                 Shuffle();
-                 inPlaceRadixLSDSort(array, 10);
+                //Shuffle();
+                //inPlaceRadixLSDSort(array, 10);
                 //  Shuffle();
                 //  mergeSortOP(array);
 
@@ -627,6 +378,20 @@ namespace sort_visualiser
                 // RadixSort(array, 4);
                 // Shuffle();
                 // DoubleSelectionSort(array);
+                //Shuffle();
+                //inplaceRadixSort rads = new inplaceRadixSort();
+                //rads.Base = 2;
+                //rads.array = array;
+                //rads.run();
+
+                Shuffle();
+
+                for (int i = 0; i < sorts.Length; i++)
+                {
+                    sorts[i].array = array;
+                }
+
+                sortToRun.run();
 
                 bool sorted = CheckIfSortFinished();
 
@@ -649,11 +414,11 @@ namespace sort_visualiser
             GL.Disable(EnableCap.Texture2D);
             DrawString("awaiting input..", 12, 12, 18, Color.Blue);
             if (currentErrorString != "")
-                drawBetterButSlowString(currentErrorString, 12, 40, 18, Color.Black, Color.Red);
+                drawBetterButSlowString(currentErrorString, 12, Height- 40, 18, Color.Black, Color.Red);
             if (currentInfoString != "" && currentErrorString == "")
-                drawBetterButSlowString(currentInfoString, 12, 40, 18, Color.Black, Color.Green);
+                drawBetterButSlowString(currentInfoString, 12, Height - 40, 18, Color.Black, Color.Green);
             else if(currentInfoString != "" && currentErrorString != "")
-                drawBetterButSlowString(currentInfoString, 12, 80, 18, Color.Black, Color.Green);
+                drawBetterButSlowString(currentInfoString, 12, Height - 80, 18, Color.Black, Color.Green);
             //drawBetterButSlowString(currentInfoString, 12, 36, 18, Color.Black, Color.Green);
             //   GL.Color4(Color4.Black);
             //   GL.LineWidth(1);
@@ -754,6 +519,8 @@ namespace sort_visualiser
 
         public TextBox DelayBox;
         public Label   DelayBoxLabel;
+
+        public Button[] sortButtons;
 
         public void initializeUI()
         {
@@ -966,6 +733,28 @@ namespace sort_visualiser
                SoundMulBox.     order = 1;
                SoundMulBoxLabel.order = 1;
 
+            sortButtons = new Button[sorts.Length];
+            
+            for (int i = 0; i < sortButtons.Length; i++)
+            {
+                sortButtons[i] = new Button();
+                sortButtons[i].x = 300;
+                int space = Height/sorts.Length;
+                sortButtons[i].y = i * space ;
+                sortButtons[i].fontSize = Height / sorts.Length-13;
+                sortButtons[i].width = (sorts[i].name.Length + 3) * sortButtons[i].fontSize;
+                sortButtons[i].height = Height / sorts.Length;
+                sortButtons[i].text = i.ToString() + "." + sorts[i].name;
+                sortButtons[i].OnClick += runsort;
+
+                
+            }
+
+            foreach (Button b in sortButtons)
+            {
+                uis.Add(b);
+            }
+
             uis.Add(DelayBox);
             uis.Add(DelayBoxLabel);
 
@@ -1030,6 +819,15 @@ namespace sort_visualiser
 
                 vis_mode_box_on_changed(this, new EventArgs());
             }
+        }
+
+        private void runsort(object sender, EventArgs e)
+        {
+            Button b = (Button)sender;
+            string num = b.text.Split('.')[0];
+            int sort = int.Parse(num);
+
+            sortToRun = sorts[sort];
         }
 
         private void vis_mode_minus_but_click(object sender, EventArgs e)
@@ -1309,50 +1107,19 @@ namespace sort_visualiser
 
 
 
-        int next;
+      
 
-        public void timeSort(int[] ac, int magnitude)
-        {
-            int A = magnitude;
-            next = 0;
-            List<Thread> threads = new List<Thread>();
-            int[] tmp = new int[ac.Length];
-            Array.Copy(ac, tmp, ac.Length);
-            for (int i = 0; i < ac.Length; i++)
-            {
-                marked[0] = i;
-                int c = i;
+       
 
 
-                threads.Add(new Thread(new ThreadStart(() =>
-                {
-                    int a = tmp[c];
 
-                    Thread.Sleep(a * A);
 
 
-                    report(ac, a);
-                })));
 
 
 
-            }
 
-            foreach (Thread t in threads)
-                t.Start();
-            Thread.Sleep(ac.Length * A);
-            dT();
-            insertionSort(ac, 0, ac.Length);
-            //countingSort(ac);
-        }
 
-        public void report(int[] ac, int a)
-        {
-            //marked[0] = next;
-            ac[next] = a;
-            next++;
-            //dT();
-        }
 
 
 
@@ -1383,138 +1150,18 @@ namespace sort_visualiser
 
 
 
+       
 
 
 
 
 
 
-public  void swapnm(int[] ac, int i, int j)
-        {
-            
-            
-            int temp = ac[i];
-            ac[i] = ac[j];
-            ac[j] = temp;
-            //dT();
-        }
 
-        public void swapUpTo(int[] ac, int pos, int to)
-        {
-            if (to - pos > 0)
-                for (int i = pos; i < to; i++)
-                    swap(ac, i, i + 1);
-            else
-                for (int i = pos; i > to; i--)
-                    swap(ac, i, i - 1);
-            
-        }
 
-        public void swapUpToNM(int[] ac, int pos, int to)
-        {
-            if (to - pos > 0)
-                for (int i = pos; i < to; i++)
-                    swapnm(ac, i, i + 1);
-            else
-                for (int i = pos; i > to; i--)
-                    swapnm(ac, i, i - 1);
-            dT();
-           
-        }
 
-        public  void swapUp(int[] ac, int pos)
-        {
-            for (int i = pos; i < ac.Length; i++)
-                swap(ac, i, i + 1);
 
-           
-        }
-
-
-
-        void weaveMerge(int[] ac, int min, int max, int mid)
-        {
-
-            //radixLSDsortnd(2, min, max);
-
-            int i = 1;
-            int target = (mid - min);
-            while (i <= target)
-            {
-                //swapUpTo(mid+(i-min), min+(i-min)*2, 0.01);
-                swapUpTo(ac, mid + i, min + i * 2 - 1);
-                i++;
-
-            }
-            insertionSort(ac, min, max + 1);
-            //sleep(100);
-
-
-        }
-
-        public void weaveMergeSort(int[] ac, int min, int max)
-        {
-            if (max - min == 0)
-            {//only one element.
-             //no swap
-            }
-            else if (max - min == 1)
-            {//only two elements and swaps them
-                if (ac[min] > ac[max])
-                    swap(ac, min, max);
-            }
-            else
-            {
-                int mid = ((int)Math.Floor((double)(min + max) / 2));//The midpoint
-
-                weaveMergeSort(ac, min, mid);//sort the left side
-                weaveMergeSort(ac, mid + 1, max);//sort the right side
-                weaveMerge(ac, min, max, mid);//combines them
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-        void maxheapifyrec(int[] ac, int pos, bool max)
-        {
-            if (pos >= ac.Length)
-                return;
-
-            int child1 = pos * 2 + 1;
-            int child2 = pos * 2 + 2;
-
-            maxheapifyrec(ac, child1, max);
-            maxheapifyrec(ac, child2, max);
-
-            if (child2 >= ac.Length)
-            {
-                if (child1 >= ac.Length)
-                    return; //Done, no children
-                if (ac[child1] > ac[pos])
-                    swap(ac, pos, child1);
-                return;
-            }
-            
-            //Find largest child
-            int lrg = child1;
-            if (ac[child2] > ac[child1])
-                lrg = child2;
-
-            //Swap with largest child
-            if (ac[lrg] > ac[pos])
-            {
-                swap(ac, pos, lrg);
-                percdwn(ac, lrg, true, ac.Length);
-                return;
-            }
-        }
+       
 
         void HsvToRgb(double h, double S, double V, out int r, out int g, out int b)
         {
@@ -1622,55 +1269,9 @@ public  void swapnm(int[] ac, int i, int j)
             return i;
         }
 
-        void percdwn(int[] ac, int pos, bool max, int len)
-        {
-            int child1 = pos * 2 + 1;
-            int child2 = pos * 2 + 2;
+        
 
-            if (child2 >= len)
-            {
-                if (child1 >= len) //Done
-                    return;
-                else
-                {
-                    //Single Child
-                    if ((max && (ac[child1] > ac[pos])) || (!max && (ac[child1] < ac[pos])))
-                        swap(ac, pos, child1);
-                    return;
-                }
-            }
-
-
-            if (ac[child1] > ac[child2])
-            {
-                //Ensure child1 is the smallest for easy programming
-                int tmp = child1;
-                child1 = child2;
-                child2 = tmp;
-            }
-
-
-            if (max && (ac[child2] > ac[pos]))
-            {
-                swap(ac, pos, child2);
-                percdwn(ac, child2, max, len);
-            }
-            else if (!max && (ac[child1] < ac[pos]))
-            {
-                swap(ac, pos, child1);
-                percdwn(ac, child1, max, len);
-            }
-        }
-
-        public void maxheapsort(int[] ac)
-        {
-            maxheapifyrec(ac, 0, true);
-            for (int i = ac.Length - 1; i > 0; i--)
-            {
-                swap(ac, 0, i);
-                percdwn(ac, 0, true, i);
-            }
-        }
+        
 
 
 
@@ -1710,100 +1311,16 @@ public  void swapnm(int[] ac, int i, int j)
 
 
 
-        public void insertionSort(int[] ac, int start, int end)
-        {
-            int pos;
-            for (int i = start; i < end; i++)
-            {
-                pos = i;
-
-                marked[1] = i;
-                marked[2] = -5;
-                while (pos > start && ac[pos] <= ac[pos - 1])
-                {
-
-                    swap(ac, pos, pos - 1);
-
-                    pos--;
-                }
-            }
-        }
+        
 
 
 
-        public void insertionSort(int[] ac)
-        {
-            int pos;
-            for (int i = 1; i < ac.Length; i++)
-            {
-                pos = i;
+        
+
+        
 
 
-                marked[1] = i;
-                marked[2] = -5;
-                while (pos > 0 && ac[pos] <= ac[pos - 1])
-                {
-
-                    swap(ac, pos, pos - 1);
-                    pos--;
-                }
-            }
-        }
-
-        public void selectionSort(int[] ac)
-        {
-            for (int i = 0; i < ac.Length - 1; i++)
-            {
-                int lowestindex = i;
-                for (int j = i + 1; j < ac.Length; j++)
-                {
-                    if (ac[j] < ac[lowestindex])
-                    {
-                        lowestindex = j;
-                    }
-                }
-                swap(ac, i, lowestindex);
-            }
-        }
-
-
-        public void shellSort(int[] ac, int gap, int divrate)
-        {
-            double sleepamt = 1d;
-            while (gap > 0)
-            {
-                for (int j = 0; j <= gap - 1; j++)
-                {
-                    for (int i = j + gap; i < ac.Length; i += gap)
-                    {
-                        int pos = i;
-                        int prev = pos - gap;
-                        while (prev >= 0)
-                        {
-                            if (ac[pos] < ac[prev])
-                            {
-
-                                swap(ac, pos, prev);
-
-                            }
-                            else
-                            {
-
-                                break;
-                            }
-                            pos = prev;
-                            prev = pos - gap;
-                        }
-                    }
-                }
-
-                if (gap == 1) //Done
-                    break;
-
-                gap = Math.Max(gap / divrate, 1); //Ensure that we do gap 1
-                                                  //sleepamt /= divrate;
-            }
-        }
+       
 
 
 
@@ -1849,7 +1366,7 @@ public  void swapnm(int[] ac, int i, int j)
                 case ShuffleModes.DecendingArray:
                     for (int i = 0; i < array.Length/2; i++)
                     {
-                        swap(array, i, array.Length - i-1);
+                       Util.  swap(array, i, array.Length - i-1);
                         if(showShuffleAnim)
                         dT();
                     }
@@ -1894,102 +1411,11 @@ public  void swapnm(int[] ac, int i, int j)
             
         }
 
-        public  void radixMSDSort(int[] ac, int radix)
-        {
-            int highestpower = analyze(ac, radix);
-            int[] tmp = new int[ac.Length];
-            Array.Copy(ac, tmp, ac.Length);
-            radixMSDRec(ac, 0, ac.Length-1, radix, highestpower);
-        }
+       
 
-        public  void radixMSDRec(int[]  ac, int min, int max, int radix, int pow)
-        {
-            if (min >= max || pow < 0)
-                return;
-            marked[2] = max;
-            marked[3] = min;
-            dT();
-            List<int>[] registers = new List<int>[radix];
-            for (int i = 0; i < radix; i++)
-                registers[i] = new List<int>();
-            for (int i = min; i < max; i++)
-            {
-                marked[1] = i;
-                registers[getDigit(ac[i], pow, radix)].Add(ac[i]);
-                //dT();
-            }
-            transcribermsd(ac, registers, min);
+        
 
-            int sum = 0;
-            for (int i = 0; i < registers.Length; i++)
-            {
-                radixMSDRec(ac, sum + min, sum + min + registers[i].Count, radix, pow - 1);
-                sum += registers[i].Count;
-                registers[i].Clear();
-            }
-        }
-
-        public void transcribermsd(int[] ac, List<int>[] registers, int min)
-        {
-            int total = 0;
-            foreach(List<int> ai in registers)
-                total += ai.Count();
-            int tmp = 0;
-            for (int ai = registers.Length; ai >= 0; ai--)
-            {
-                for (int i = registers[ai].Count - 1; i >= 0; i--)
-                {
-                    ac[total + min - tmp - 1] = registers[ai][i];
-
-                    marked[1] = total + min - tmp - 1;
-                    tmp++;
-                    dT();
-                }
-            }
-        }
-
-        public void quickSort(int[] ac, int p, int r)
-        {
-            if (p < r)
-            {
-                int q = partition(ac, p, r);
-
-                quickSort(ac, p, q);
-                quickSort(ac, q + 1, r);
-            }
-        }
-
-        public int partition(int[] ac, int p, int r)
-        {
-
-            int x = ac[p];
-            int i = p - 1;
-            int j = r + 1;
-
-            while (true)
-            {
-                //sleep(0.);
-                i++;
-                while (i < r && ac[i] < x)
-                {
-                    i++;
-
-                    marked[1] = j;
-
-                }
-                j--;
-                while (j > p && ac[j] > x)
-                {
-                    j--;
-                    marked[2] = j;
-                }
-
-                if (i < j)
-                    swap(ac, i, j);
-                else
-                    return j;
-            }
-        }
+       
 
 
 
@@ -2050,7 +1476,11 @@ public  void swapnm(int[] ac, int i, int j)
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.ClearColor(Color.White);
 
-
+            for (int i = 0; i < marked.Length; i++)
+            {
+                if (marked[i] >= array.Length)
+                    marked[i] = array.Length - 1;
+            }
 
 
             // DrawString(acceses.ToString(), 12, 12, 12, Color.Black);
@@ -2876,68 +2306,7 @@ public  void swapnm(int[] ac, int i, int j)
             }
                 return ret;
         }
-        public  void mergeSortOP(int[]  ac)
-        {
-            int start = 0;
-            int end = ac.Length;
-            int mid = (end + start) / 2;
-            mergeOP(ac, start, mid, end);
-        }
-
-        public  void mergeOP(int[] ac, int start, int mid, int end)
-        {
-            if (start == mid)
-                return;
-            mergeOP(ac, start, (mid + start) / 2, mid);
-            mergeOP(ac, mid, (mid + end) / 2, end);
-
-            int[] tmp = new int[end - start];
-
-            int low = start;
-            int high = mid;
-            for (int nxt = 0; nxt < tmp.Length; nxt++)
-            {
-                if (low >= mid && high >= end)
-                    break;
-                if (low < mid && high >= end)
-                {
-                    tmp[nxt] = ac[low];
-                    low++;
-                   
-                }
-                else if (low >= mid && high < end)
-                {
-                    tmp[nxt] = ac[high];
-                    high++;
-                }
-                else if (ac[low] < ac[high])
-                {
-                    tmp[nxt] = ac[low];
-                    low++;
-                }
-                else
-                {
-                    tmp[nxt] = ac[high];
-                    high++;
-                }
-                
-
-                marked[1] = low;
-                marked[2] = high;
-               //if(end-start>=array.Length/10)
-                dT();
-            }
-            //System.arraycopy(tmp, 0, array, start, tmp.length);
-            marked[2] = -5;
-            for (int i = 0; i < tmp.Length; i++)
-            {
-                ac[start + i] = tmp[i];
-                
-                marked[1] = start + i;
-                if (end - start >= ac.Length / 100)
-                    dT();
-            }
-        }
+        
 
         public void dT(int[] arr)
         {

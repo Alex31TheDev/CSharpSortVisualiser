@@ -8,6 +8,5 @@ e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visuali
 e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.csproj.CopyComplete
 e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.exe
 e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.pdb
-e:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\obj\Debug\sort_visualiser.csprojResolveAssemblyReference.cache
 E:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\UiSystemOpenTK.dll
 E:\VISUAL STUDIO PROJECTS\sort_visualiser\sort_visualiser\bin\Debug\UiSystemOpenTK.pdb

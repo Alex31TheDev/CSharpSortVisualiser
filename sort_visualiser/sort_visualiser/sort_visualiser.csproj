@@ -53,6 +53,25 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sorts\bubbleSort.cs" />
+    <Compile Include="Sorts\cocktailShakerSort.cs" />
+    <Compile Include="Sorts\countingSort.cs" />
+    <Compile Include="Sorts\doubleSelectionSort.cs" />
+    <Compile Include="Sorts\gravitySort.cs" />
+    <Compile Include="Sorts\inplaceRadixSort.cs" />
+    <Compile Include="Sorts\insertionSort.cs" />
+    <Compile Include="Sorts\maxHeapSort.cs" />
+    <Compile Include="Sorts\mergeSort.cs" />
+    <Compile Include="Sorts\mergeSortIP.cs" />
+    <Compile Include="Sorts\quickSort.cs" />
+    <Compile Include="Sorts\radixLsdSort.cs" />
+    <Compile Include="Sorts\radixMsdSort.cs" />
+    <Compile Include="Sorts\selectionSort.cs" />
+    <Compile Include="Sorts\shellSort.cs" />
+    <Compile Include="Sorts\Sort.cs" />
+    <Compile Include="Sorts\timeSort.cs" />
+    <Compile Include="Sorts\Util.cs" />
+    <Compile Include="Sorts\waveMergeSort.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
